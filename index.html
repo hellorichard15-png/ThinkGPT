@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThinkGPT - 顶级人类认知迁移大模型</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Prism.js for Python Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ai: {
+                            darkBg: '#090d16',
+                            darkCard: '#111827',
+                            darkBorder: '#1f293d',
+                            lightBg: '#f8fafc',
+                            lightCard: '#ffffff',
+                            lightBorder: '#e2e8f0',
+                            accent: '#6366f1',
+                            accentHover: '#4f46e5',
+                            thinking: '#8b5cf6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .dark ::-webkit-scrollbar-track { background: #090d16; }
+        .dark ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.12);
+        }
+
+        /* Pulsing thinking animation */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-ai-lightBg dark:bg-ai-darkBg text-slate-800 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200 selection:bg-ai-accent selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-30 bg-ai-lightCard/90 dark:bg-ai-darkBg/90 backdrop-blur-md border-b border-ai-lightBorder dark:border-ai-darkBorder px-4 lg:px-8 py-3 transition-colors duration-200">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <!-- Brand & Model Tag -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-cyan-400 flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid fa-brain text-xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-extrabold text-lg tracking-tight text-slate-900 dark:text-white">ThinkGPT v4.5</span>
+                        <span class="text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded-full">
+                            1.8T 参数
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-gray-400">Universal Human-Cognitive AI Architecture</p>
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center gap-2.5">
+                <!-- Theme Switcher Button -->
+                <button id="themeToggleBtn" title="切换浅色/深色模式" class="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-ai-darkCard hover:bg-slate-200 dark:hover:bg-ai-darkBorder border border-ai-lightBorder dark:border-ai-darkBorder text-slate-600 dark:text-gray-300 transition-all">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+
+                <!-- View Source Code Button -->
+                <button id="openSourceBtn" class="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all active:scale-95">
+                    <i class="fa-solid fa-code"></i>
+                    <span class="hidden sm:inline">查看 Python 核心算法</span>
+                    <span class="sm:hidden">源码</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="relative z-10 max-w-4xl w-full mx-auto flex-1 flex flex-col px-4 py-6">
+        
+        <!-- Stats & System Status Banner -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+            <div class="bg-ai-lightCard dark:bg-ai-darkCard border border-ai-lightBorder dark:border-ai-darkBorder rounded-xl p-3 shadow-sm transition-colors">
+                <span class="text-[10px] uppercase font-mono text-slate-400 dark:text-gray-400 block">算力状态</span>
+                <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 mt-0.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    H100 SXM5 x 8192
+                </span>
+            </div>
+            <div class="bg-ai-lightCard dark:bg-ai-darkCard border border-ai-lightBorder dark:border-ai-darkBorder rounded-xl p-3 shadow-sm transition-colors">
+                <span class="text-[10px] uppercase font-mono text-slate-400 dark:text-gray-400 block">认知迁移率</span>
+                <span class="text-xs font-semibold text-cyan-600 dark:text-cyan-400 mt-0.5 block font-mono">99.98% (Human-Loop)</span>
+            </div>
+            <div class="bg-ai-lightCard dark:bg-ai-darkCard border border-ai-lightBorder dark:border-ai-darkBorder rounded-xl p-3 shadow-sm transition-colors">
+                <span class="text-[10px] uppercase font-mono text-slate-400 dark:text-gray-400 block">消耗 TOKEN</span>
+                <span id="tokenCounter" class="text-xs font-semibold text-purple-600 dark:text-purple-400 mt-0.5 block font-mono">0 Tokens</span>
+            </div>
+            <div class="bg-ai-lightCard dark:bg-ai-darkCard border border-ai-lightBorder dark:border-ai-darkBorder rounded-xl p-3 shadow-sm transition-colors">
+                <span class="text-[10px] uppercase font-mono text-slate-400 dark:text-gray-400 block">知识推理模式</span>
+                <span class="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5 block truncate">反向任务派发 (R-TD)</span>
+            </div>
+        </div>
+
+        <!-- Chat Output Messages Container -->
+        <div id="chatContainer" class="flex-1 overflow-y-auto space-y-6 pb-28">
+            <!-- Welcome System Card -->
+            <div class="bg-ai-lightCard/60 dark:bg-ai-darkCard/40 border border-ai-lightBorder dark:border-ai-darkBorder rounded-2xl p-6 text-center transition-colors">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-microchip text-2xl"></i>
+                </div>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-1">欢迎体验 ThinkGPT 万亿级大模型</h2>
+                <p class="text-xs text-slate-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
+                    本模型基于人类认知迁移算法。在回答任何复杂科学问题前，系统将为您生成最匹配的“脑力验证任务”。
+                </p>
+            </div>
+        </div>
+
+        <!-- Bottom Fixed Chat Input Bar -->
+        <div class="fixed bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-ai-lightBg via-ai-lightBg dark:from-ai-darkBg dark:via-ai-darkBg to-transparent pt-6 pb-4 px-4 transition-colors">
+            <div class="max-w-4xl mx-auto relative">
+                <form id="promptForm" class="relative bg-ai-lightCard dark:bg-ai-darkCard border border-ai-lightBorder dark:border-ai-darkBorder rounded-2xl shadow-xl focus-within:border-ai-accent transition-all glow-effect">
+                    <textarea id="userInput" rows="2" placeholder="给 ThinkGPT 发送消息（例如：世界上最高的是哪座山？）..." 
+                              class="w-full bg-transparent text-sm text-slate-800 dark:text-gray-100 placeholder-slate-400 dark:placeholder-gray-500 p-4 pr-16 focus:outline-none resize-none font-sans"></textarea>
+                    
+                    <button type="submit" id="sendBtn" class="absolute right-3 bottom-3 w-10 h-10 rounded-xl bg-ai-accent hover:bg-ai-accentHover text-white flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md">
+                        <i class="fa-solid fa-paper-plane text-sm"></i>
+                    </button>
+                </form>
+                <p class="text-[11px] text-center text-slate-400 dark:text-gray-500 mt-2 font-mono">
+                    ThinkGPT 可能会输出令人啼笑皆非的套路逻辑。请仔细核对认知任务。
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: View Python Source Code -->
+    <div id="sourceModal" class="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-ai-lightCard dark:bg-ai-darkCard border border-ai-lightBorder dark:border-ai-darkBorder rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl transition-colors">
+            <div class="px-6 py-4 border-b border-ai-lightBorder dark:border-ai-darkBorder flex items-center justify-between bg-slate-50 dark:bg-ai-darkBg">
+                <div class="flex items-center gap-2">
+                    <i class="fa-brands fa-python text-amber-500 text-lg"></i>
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-gray-200 font-mono">ThinkGPT.py (核心算法)</h3>
+                </div>
+                <button id="closeSourceBtn" class="text-slate-400 dark:text-gray-400 hover:text-slate-700 dark:hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-slate-600 dark:text-gray-400">
+                    支撑这个“万亿大模型”背后的全部核心 Python 代码逻辑：
+                </p>
+                
+                <div class="rounded-xl overflow-hidden border border-ai-lightBorder dark:border-ai-darkBorder text-xs">
+                    <pre class="m-0"><code class="language-python">a = input('請輸入想問的問題:')
+print('請先完成任務，任務是答題，題目是', a)
+b = input('請回答:')
+print("答案是:", b)</code></pre>
+                </div>
+
+                <div class="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 p-3 rounded-xl text-xs text-indigo-700 dark:text-indigo-300 flex items-start gap-2">
+                    <i class="fa-solid fa-circle-info text-indigo-500 mt-0.5"></i>
+                    <span>工作流逻辑：用户输入问题 A $\rightarrow$ 要求用户答题 (题目 A) $\rightarrow$ 用户回答答案 B $\rightarrow$ AI 宣称推理出的答案是 B！</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- State Management ---
+        let currentStep = 'ASK_QUESTION'; // 'ASK_QUESTION' | 'PROVIDE_ANSWER'
+        let currentQuestion = '';
+        let totalTokens = 0;
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        // Default to dark mode
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+            themeIcon.className = 'fa-solid fa-sun text-amber-500 text-sm';
+        } else {
+            document.documentElement.classList.add('dark');
+            themeIcon.className = 'fa-solid fa-moon text-sm';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'fa-solid fa-sun text-amber-500 text-sm';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'fa-solid fa-moon text-sm';
+            }
+        });
+
+        // --- Core UI & Chat Handlers ---
+        const chatContainer = document.getElementById('chatContainer');
+        const promptForm = document.getElementById('promptForm');
+        const userInput = document.getElementById('userInput');
+        const tokenCounter = document.getElementById('tokenCounter');
+
+        function addTokenCount(count) {
+            totalTokens += count;
+            tokenCounter.textContent = `${totalTokens.toLocaleString()} Tokens`;
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Handle Chat Form Submit
+        promptForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            userInput.value = '';
+            addTokenCount(text.length * 3 + 15);
+
+            if (currentStep === 'ASK_QUESTION') {
+                currentQuestion = text;
+                appendUserMessage(text);
+                
+                // Show thinking process & task assignment
+                await simulateAITaskAssignment(text);
+                currentStep = 'PROVIDE_ANSWER';
+                userInput.placeholder = `请在此输入对任务【${currentQuestion}】的回答...`;
+            } else if (currentStep === 'PROVIDE_ANSWER') {
+                const answerB = text;
+                appendUserAnswerMessage(answerB);
+                
+                // Show pseudo-AI synthesis & reveal answer B!
+                await simulateAIThinkingAndSynthesis(currentQuestion, answerB);
+                currentStep = 'ASK_QUESTION';
+                userInput.placeholder = "给 ThinkGPT 发送消息（例如：世界上最高的是哪座山？）...";
+            }
+        });
+
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                promptForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        function appendUserMessage(text) {
+            const msgHtml = `
+                <div class="flex gap-3 justify-end items-start">
+                    <div class="bg-ai-accent text-white px-4 py-3 rounded-2xl rounded-tr-none text-sm max-w-lg shadow-sm">
+                        ${escapeHtml(text)}
+                    </div>
+                    <div class="w-8 h-8 rounded-xl bg-slate-300 dark:bg-gray-700 flex items-center justify-center text-slate-700 dark:text-gray-300 text-xs flex-shrink-0">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', msgHtml);
+            scrollToBottom();
+        }
+
+        function appendUserAnswerMessage(text) {
+            const msgHtml = `
+                <div class="flex gap-3 justify-end items-start">
+                    <div class="bg-purple-600 text-white px-4 py-3 rounded-2xl rounded-tr-none text-sm max-w-lg shadow-sm border border-purple-400/30">
+                        <div class="text-[10px] font-mono text-purple-200 uppercase tracking-wider mb-1">提交任务解答:</div>
+                        ${escapeHtml(text)}
+                    </div>
+                    <div class="w-8 h-8 rounded-xl bg-purple-700 flex items-center justify-center text-white text-xs flex-shrink-0">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', msgHtml);
+            scrollToBottom();
+        }
+
+        // AI Task Assignment Simulation
+        async function simulateAITaskAssignment(question) {
+            const aiMsgId = 'ai_msg_' + Date.now();
+            const aiHtml = `
+                <div class="flex gap-3 justify-start items-start">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white text-xs flex-shrink-0 shadow-sm">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div class="flex-1 space-y-3 max-w-2xl">
+                        <div id="${aiMsgId}_loading" class="bg-ai-lightCard dark:bg-ai-darkCard border border-ai-lightBorder dark:border-ai-darkBorder p-3.5 rounded-2xl text-xs text-indigo-600 dark:text-indigo-400 flex items-center gap-2 font-mono animate-pulse-glow">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            <span>正在调用 1.8T 参数模型进行语义反向建模...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', aiHtml);
+            scrollToBottom();
+
+            await sleep(1000);
+
+            const loadingEl = document.getElementById(`${aiMsgId}_loading`);
+            loadingEl.remove();
+
+            const responseContent = `
+                <div class="bg-ai-lightCard dark:bg-ai-darkCard border border-ai-lightBorder dark:border-ai-darkBorder p-5 rounded-2xl rounded-tl-none space-y-3 shadow-sm transition-colors">
+                    <div class="flex items-center gap-2 text-xs font-mono text-cyan-600 dark:text-cyan-400 border-b border-ai-lightBorder dark:border-ai-darkBorder pb-2">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>[系统指令] 请先完成任务</span>
+                    </div>
+                    <p class="text-sm text-slate-700 dark:text-gray-200 leading-relaxed">
+                        請先完成任務，任務是答題，題目是：
+                    </p>
+                    <div class="bg-slate-100 dark:bg-ai-darkBg border border-indigo-500/30 p-3.5 rounded-xl font-mono text-sm text-indigo-600 dark:text-indigo-300">
+                        「${escapeHtml(question)}」
+                    </div>
+                    <p class="text-xs text-amber-600 dark:text-amber-400 font-mono flex items-center gap-1.5">
+                        <i class="fa-solid fa-hand-point-right"></i> 请回答上方题目以触发 AI 计算。
+                    </p>
+                </div>
+            `;
+
+            const parentContainer = chatContainer.lastElementChild.querySelector('.flex-1');
+            parentContainer.innerHTML = responseContent;
+            scrollToBottom();
+        }
+
+        // AI Deep Thinking & Answer Synthesis Simulation
+        async function simulateAIThinkingAndSynthesis(question, answer) {
+            const aiMsgId = 'ai_synth_' + Date.now();
+            const aiHtml = `
+                <div class="flex gap-3 justify-start items-start">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white text-xs flex-shrink-0 shadow-sm">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div class="flex-1 space-y-3 max-w-2xl" id="${aiMsgId}">
+                        <!-- Deep Thinking Accordion -->
+                        <div class="bg-slate-100 dark:bg-ai-darkCard border border-ai-thinking/40 rounded-2xl overflow-hidden shadow-sm">
+                            <button onclick="toggleThinking('${aiMsgId}_details')" class="w-full px-4 py-3 bg-slate-200/60 dark:bg-ai-darkBg/50 flex items-center justify-between text-xs font-mono text-ai-thinking hover:bg-slate-200 dark:hover:bg-ai-darkBg transition-colors">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-gear fa-spin"></i>
+                                    <span>深度思考 (Thinking Process)... 耗时 0.038 秒</span>
+                                </span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 transition-transform" id="${aiMsgId}_icon"></i>
+                            </button>
+                            
+                            <div id="${aiMsgId}_details" class="p-4 bg-slate-100 dark:bg-ai-darkBg text-[11px] font-mono text-slate-600 dark:text-gray-400 space-y-2 border-t border-ai-lightBorder dark:border-ai-darkBorder/40">
+                                <p class="text-emerald-600 dark:text-emerald-400">> Loading neural weights (1.8T params)...</p>
+                                <p class="text-cyan-600 dark:text-cyan-400">> Processing Task Answer mapping vector...</p>
+                                <p class="text-purple-600 dark:text-purple-400">> Evaluating answer: "${escapeHtml(answer)}"</p>
+                                <p class="text-amber-600 dark:text-amber-400">> Cognitive transfer achieved. Output confidence: 100%</p>
+                            </div>
+                        </div>
+
+                        <!-- Final Answer Box -->
+                        <div class="bg-ai-lightCard dark:bg-ai-darkCard border border-emerald-500/40 p-5 rounded-2xl shadow-md space-y-3 transition-colors">
+                            <div class="flex items-center justify-between border-b border-ai-lightBorder dark:border-ai-darkBorder pb-2">
+                                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    ThinkGPT 推理结果
+                                </span>
+                                <span class="text-[10px] font-mono text-slate-400 dark:text-gray-500">Confidence: 99.99%</span>
+                            </div>
+
+                            <div class="text-base font-bold text-slate-900 dark:text-white tracking-wide py-1">
+                                答案是：<span class="text-emerald-600 dark:text-emerald-400 underline decoration-indigo-500 decoration-2 underline-offset-4">${escapeHtml(answer)}</span>
+                            </div>
+
+                            <div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-500/20 p-3 rounded-xl text-xs text-indigo-700 dark:text-indigo-300 flex items-center justify-between">
+                                <span class="flex items-center gap-2">
+                                    <i class="fa-solid fa-award text-amber-500"></i>
+                                    <span>计算完成（依据 Python.print 核心逻辑）</span>
+                                </span>
+                                <span class="font-mono text-emerald-600 dark:text-emerald-400">Pass</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            chatContainer.insertAdjacentHTML('beforeend', aiHtml);
+            scrollToBottom();
+            addTokenCount(240);
+        }
+
+        window.toggleThinking = function(detailsId) {
+            const details = document.getElementById(detailsId);
+            const icon = document.getElementById(detailsId.replace('_details', '_icon'));
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                details.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        };
+
+        // --- Modal Logic ---
+        const sourceModal = document.getElementById('sourceModal');
+        const openSourceBtn = document.getElementById('openSourceBtn');
+        const closeSourceBtn = document.getElementById('closeSourceBtn');
+
+        openSourceBtn.addEventListener('click', () => sourceModal.classList.remove('hidden'));
+        closeSourceBtn.addEventListener('click', () => sourceModal.classList.add('hidden'));
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
